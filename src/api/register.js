@@ -31,7 +31,6 @@ router.get('/userList', async (req, res) => {
     })
 })
 
-
 /**
  * @name 用户注册
  */
@@ -164,6 +163,33 @@ router.get('/getUserinfo', async (req, res) => {
             user: user[0]
         }
     })
+})
+
+/**
+ * @name 修改个性标签
+ */
+router.post('/putPersonalizedSignature', async (req, res) => {
+    let params = {
+        data: {
+            type: '',
+            message: ''
+        }
+    }
+    let { personalizedSignature, userId } = req.body
+    if(personalizedSignature && personalizedSignature.trim() !== '') {
+        try {
+            await register.updateMany({ _id: userId }, { $set: { personalizedSignature: personalizedSignature }})
+            params.data.type = 'success'
+            params.data.message = '发布成功'
+        } catch {
+            params.data.type = 'error'
+            params.data.message = '发布失败'
+        }
+    } else {
+        params.data.type = 'info'
+        params.data.message = '请输入个性签名'
+    }
+    res.send(params)
 })
 
 module.exports = router
